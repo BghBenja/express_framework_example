@@ -4,7 +4,9 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 
 app.get('/products', (req, res) =>{
-    res.send('GET /products');
+    fs.readFile('./data/products.json', (err, file) => {
+        res.send(JSON.parse(file));
+    })
 });
 
 app.get('/products/:productId', (req, res) => {
@@ -12,7 +14,7 @@ app.get('/products/:productId', (req, res) => {
 });
 
 app.post('/products', bodyParser.json(), (req, res) => {
-    
+
     const newProduct = {
         id: uuidv4(),
         name: sanitizeString(req.body.name),
