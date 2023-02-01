@@ -1,14 +1,24 @@
 const express = require('express');
 const app = express();
-const path = require('path');
-const bodyParser = require('body-parser');
 
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '/home.html'));
+app.get('/products', (req, res) =>{
+    res.send('GET /products');
 });
 
-app.post('/products',bodyParser.urlencoded({extended: true}), function(req, res) {
-    console.log(req.body);
+app.get('/products/:productId', (req, res) => {
+    res.send('GET /products/id');
+});
+
+app.post('/products', (req, res) => {
+    res.send('POST /products');
+});
+
+app.put('/products/:productId', (req, res) => {
+    res.send('PUT /products/id');
+});
+
+app.delete('/products/:productId', (req, res) => {
+    res.send('DELETE /products/id');
 });
 
 app.listen(3000);
