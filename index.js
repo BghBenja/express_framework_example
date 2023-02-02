@@ -45,8 +45,31 @@ app.post('/products', bodyParser.json(), (req, res) => {
     })
 });
 
-app.put('/products/:productId', (req, res) => {
-    res.send('PUT /products/id');
+app.put('/products/:egyediAzonosito',bodyParser.json(), (req, res) => {
+    const id = req.params.egyediAzonosito;
+
+    fs.readFile('./data/products.json', (err, file) => {
+        const products = JSON.parse(file);
+        const productIndexById = products.findIndex(product => product.id === id);
+
+        if(productIndexById === -1) {
+            res.status(404);
+            res.send({error: `id: ${id} not found`});
+            return;
+        }
+
+        const updatedProduct = {
+            id: id,
+            name: sanitizeString(req.body.name),
+            price: Number(req.body.price),
+            isInStock: Boolean(req.body.isInStock),
+        };
+
+        products[productIndexById] = updatedProduct;
+        fs.writeFile('./data/products.json', JSON.stringify(products), () => {
+            res.send(updatedProduct);
+        });
+    });
 });
 
 app.delete('/products/:productId', (req, res) => {
