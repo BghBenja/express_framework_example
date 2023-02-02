@@ -10,7 +10,21 @@ app.get('/products', (req, res) =>{
 });
 
 app.get('/products/:productId', (req, res) => {
-    res.send('GET /products/id');
+    const id = req.params.productId;
+    
+    fs.readFile('./data/products.json', (err, file) => {
+        const products =JSON.parse(file);
+        const productById = products.find(product => product.id === id);
+
+        if(!productById) {
+            res.status(404);
+            res.send({error: `id ${id} not found`});
+            return;
+        }
+
+        res.send(productById);
+
+    });
 });
 
 app.post('/products', bodyParser.json(), (req, res) => {
